@@ -1,0 +1,170 @@
+KONSERVIERUNG_FORMAT 2.0
+
+FUNKTIONEN
+   FKT ENGINE_CTRL "发动机控制功能组" "V1.3"
+   FKT FUEL_SYS "燃油系统" "V2.1"
+   FKT IGNITION "点火系统" "V1.0"
+END
+
+KENNWERT IdleSpeed_rpm
+   LANGNAME      "怠速转速"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_W     "rpm"
+   VAR           WERT=800.0
+END
+
+KENNWERT MaxTorque_Nm
+   LANGNAME      "最大扭矩限制"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_W     "Nm"
+   VAR           WERT=340.0
+END
+
+KENNWERT CoolantTempOffset
+   LANGNAME      "冷却液温度修正偏置"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_W     "degC"
+   VAR           WERT=2.5
+END
+
+KENNWERT InjectorDeadTime_us
+   LANGNAME      "喷射器死区时间"
+   FUNKTION      FUEL_SYS
+   EINHEIT_W     "us"
+   VAR           WERT=380.0
+END
+
+KENNWERT LambdaTarget
+   LANGNAME      "目标空燃比Lambda"
+   FUNKTION      FUEL_SYS
+   EINHEIT_W     "-"
+   VAR           WERT=1.0
+END
+
+KENNWERT IgnitionAdvanceBase_deg
+   LANGNAME      "基础点火提前角"
+   FUNKTION      IGNITION
+   EINHEIT_W     "deg"
+   VAR           WERT=14.0
+END
+
+KENNWERT KnockRetardLimit_deg
+   LANGNAME      "爆震推迟角限制"
+   FUNKTION      IGNITION
+   EINHEIT_W     "deg"
+   VAR           WERT=8.0
+END
+
+KENNLINIE CoolantTempFuelCorr 8
+   LANGNAME      "冷却液温度燃油修正曲线"
+   FUNKTION      FUEL_SYS
+   EINHEIT_X     "degC"
+   EINHEIT_W     "%"
+   ST/X          -20.0   0.0   20.0   40.0   60.0   80.0   95.0   110.0
+   WERT          32.0    19.0   10.0    4.5    2.0    0.0   -1.5   -2.5
+END
+
+KENNLINIE IntakeAirTempCorr 6
+   LANGNAME      "进气温度修正系数"
+   FUNKTION      FUEL_SYS
+   EINHEIT_X     "degC"
+   EINHEIT_W     "-"
+   ST/X          -10.0   10.0   25.0   40.0   60.0   80.0
+   WERT           1.08    1.04   1.00   0.97   0.93   0.88
+END
+
+KENNLINIE IdleSpeedTarget_rpm 5
+   LANGNAME      "怠速目标转速 vs 冷却液温度"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_X     "degC"
+   EINHEIT_W     "rpm"
+   ST/X          -20.0   0.0   20.0   60.0   90.0
+   WERT          1150.0  980.0  870.0  800.0  780.0
+END
+
+KENNLINIE ThrottleCharacteristic 10
+   LANGNAME      "节气门特性曲线"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_X     "%"
+   EINHEIT_W     "mg/hub"
+   ST/X          0.0   10.0   20.0   30.0   40.0   50.0   60.0   70.0   80.0   100.0
+   WERT          0.0    4.2    9.8   16.5   24.0   32.5   42.0   53.0   65.0    85.0
+END
+
+KENNLINIE InjPulseWidthCorr_VBatt 6
+   LANGNAME      "喷射脉宽电池电压修正"
+   FUNKTION      FUEL_SYS
+   EINHEIT_X     "V"
+   EINHEIT_W     "us"
+   ST/X          9.0   11.0   12.0   13.0   14.0   16.0
+   WERT          85.0   48.0   32.0   20.0    9.0    0.0
+END
+
+KENNFELD FuelInjMap_mg 8 5
+   LANGNAME      "燃油喷射量基础图谱"
+   FUNKTION      FUEL_SYS
+   EINHEIT_X     "rpm"
+   EINHEIT_Y     "mg/hub"
+   EINHEIT_W     "ms"
+   ST/X          800.0   1200.0   1600.0   2000.0   2800.0   3600.0   4500.0   6000.0
+   ST/Y          10.0    20.0    40.0    70.0   100.0
+   WERT          0.82    1.12    1.42    1.72    2.22    2.82    3.42    4.12
+   WERT          1.52    2.02    2.62    3.12    3.92    4.82    5.82    6.92
+   WERT          2.82    3.62    4.62    5.52    6.82    8.22    9.82   11.52
+   WERT          4.52    5.82    7.22    8.62   10.52   12.52   14.82   17.22
+   WERT          6.20    7.90    9.80   11.60   14.00   16.60   19.50   22.50
+END
+
+KENNFELD IgnitionMap_deg 8 5
+   LANGNAME      "点火提前角图谱"
+   FUNKTION      IGNITION
+   EINHEIT_X     "rpm"
+   EINHEIT_Y     "mg/hub"
+   EINHEIT_W     "deg KW"
+   ST/X          800.0   1200.0   1600.0   2000.0   2800.0   3600.0   4500.0   6000.0
+   ST/Y          10.0    20.0    40.0    70.0   100.0
+   WERT          11.0    13.0    15.0    17.0    19.0    21.0    19.0    17.0
+   WERT          13.0    16.0    19.0    22.0    25.0    27.0    25.0    22.0
+   WERT          16.0    19.0    23.0    27.0    31.0    33.0    31.0    27.0
+   WERT          15.0    18.0    22.0    26.0    29.0    31.0    29.0    25.0
+   WERT          13.0    16.0    19.0    22.0    25.0    27.0    24.0    20.0
+END
+
+KENNFELD AirMassMap_mg 8 5
+   LANGNAME      "充气量图谱"
+   FUNKTION      ENGINE_CTRL
+   EINHEIT_X     "rpm"
+   EINHEIT_Y     "%"
+   EINHEIT_W     "mg/hub"
+   ST/X          800.0   1200.0   1600.0   2000.0   2800.0   3600.0   4500.0   6000.0
+   ST/Y          20.0    40.0    60.0    80.0   100.0
+   WERT          18.0    22.0    26.0    30.0    38.0    46.0    54.0    62.0
+   WERT          34.0    42.0    50.0    58.0    72.0    86.0   100.0   114.0
+   WERT          50.0    62.0    74.0    86.0   106.0   126.0   146.0   166.0
+   WERT          66.0    82.0    98.0   114.0   140.0   166.0   192.0   218.0
+   WERT          80.0    99.0   118.0   137.0   168.0   199.0   230.0   261.0
+END
+
+KENNFELD LambdaMap 6 4
+   LANGNAME      "空燃比目标图谱"
+   FUNKTION      FUEL_SYS
+   EINHEIT_X     "rpm"
+   EINHEIT_Y     "mg/hub"
+   EINHEIT_W     "-"
+   ST/X          800.0   1500.0   2500.0   3500.0   4500.0   6000.0
+   ST/Y          20.0    50.0    80.0   100.0
+   WERT          1.00    1.00    1.00    1.00    0.96    0.94
+   WERT          1.00    1.00    1.00    0.97    0.94    0.91
+   WERT          1.00    1.00    0.97    0.94    0.91    0.89
+   WERT          1.00    0.97    0.94    0.91    0.89    0.87
+END
+
+GRUPPENPARAMETER VehicleInfo
+   LANGNAME      "车辆信息"
+   FUNKTION      ENGINE_CTRL
+   TEXT          "Project: Sample Engine ECU"
+   TEXT          "Variant: Performance"
+   TEXT          "Date: 2024-03-20"
+   TEXT          "Engineer: Test"
+END
+
