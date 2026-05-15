@@ -5,12 +5,12 @@ DCM Calibration Data Management Tool - Entry Point
 import sys
 import os
 
-# When frozen by PyInstaller the executable's directory is not automatically
-# on sys.path, so 'gui' and 'core' packages cannot be found.  Add it here
-# before any local imports so the packaged build works identically to the
-# development run.
+# PyInstaller (6.x onedir) extracts bundled packages into sys._MEIPASS
+# (_internal/ folder).  It adds that directory to sys.path automatically,
+# but only after the bootloader runs — make sure it is present before any
+# local package import so the frozen exe and dev run behave identically.
 if getattr(sys, 'frozen', False):
-    _base = os.path.dirname(sys.executable)
+    _base = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
 else:
     _base = os.path.dirname(os.path.abspath(__file__))
 if _base not in sys.path:
