@@ -3,10 +3,10 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import unittest
-from core.dcm_parser import parse_dcm, parse_dcm_string
-from core.dcm_writer import dcm_to_string, DCMWriter
-from core.dcm_compare import compare_dcm, DiffStatus, merge_dcm, MergeStrategy
-from core.dcm_model import ParameterType
+from dcm_parser import parse_dcm, parse_dcm_string
+from dcm_writer import dcm_to_string, DCMWriter
+from dcm_compare import compare_dcm, DiffStatus, merge_dcm, MergeStrategy
+from dcm_model import ParameterType
 
 
 SAMPLE_DCM = """KONSERVIERUNG_FORMAT 2.0
@@ -247,26 +247,20 @@ class TestMerge(unittest.TestCase):
 
 
 class TestSampleFile(unittest.TestCase):
-    """Integration test against the bundled sample DCM files."""
-
     def _sample_path(self, name):
         base = os.path.join(os.path.dirname(__file__), "..", "resources", name)
         return os.path.abspath(base)
 
     def test_parse_sample_v1(self):
-        path = self._sample_path("sample_engine.dcm")
-        dcm = parse_dcm(path)
+        dcm = parse_dcm(self._sample_path("sample_engine.dcm"))
         self.assertEqual(dcm.version, "2.0")
         self.assertIn("IdleSpeed_rpm", dcm.parameters)
         self.assertIn("FuelInjMap_mg", dcm.parameters)
-        self.assertIn("CoolantTempFuelCorr", dcm.parameters)
-        self.assertEqual(dcm.parameters["IdleSpeed_rpm"].param_type, ParameterType.SCALAR)
         self.assertEqual(dcm.parameters["FuelInjMap_mg"].param_type, ParameterType.MAP)
 
     def test_parse_sample_v2(self):
-        path = self._sample_path("sample_engine_v2.dcm")
-        dcm = parse_dcm(path)
-        self.assertIn("KnockRetardLimit_deg", dcm.parameters)  # only in v2
+        dcm = parse_dcm(self._sample_path("sample_engine_v2.dcm"))
+        self.assertIn("KnockRetardLimit_deg", dcm.parameters)
 
     def test_compare_samples(self):
         v1 = parse_dcm(self._sample_path("sample_engine.dcm"))

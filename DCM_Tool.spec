@@ -1,49 +1,32 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller spec for DCM Tool
 # Usage: pyinstaller DCM_Tool.spec
+#
+# All application modules (dcm_*.py, ui_*.py) live at the project root so
+# PyInstaller finds them automatically via normal import tracing from main.py.
+# No hiddenimports tricks needed for local code.
 
-import sys
 import os
 
 block_cipher = None
 
-# SPECPATH is the directory containing this .spec file (= project root).
-# Insert it into sys.path NOW so that Analysis and collect_submodules can
-# actually find the local 'gui' and 'core' packages during analysis.
-sys.path.insert(0, SPECPATH)
-
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
-
-# Collect every module inside the two local packages automatically
-_hidden = (
-    collect_submodules('gui') +
-    collect_submodules('core') +
-    [
-        'PyQt5.sip',
-        'PyQt5.QtPrintSupport',
-        'PyQt5.QtCore',
-        'PyQt5.QtGui',
-        'PyQt5.QtWidgets',
-        'matplotlib',
-        'matplotlib.backends.backend_qt5agg',
-        'matplotlib.backends.backend_agg',
-        'matplotlib.figure',
-        'matplotlib.pyplot',
-        'numpy',
-    ]
-)
-
 _datas = []
-_res_src = os.path.join(SPECPATH, 'resources')
-if os.path.exists(_res_src):
-    _datas.append((_res_src, 'resources'))
+_res = os.path.join(SPECPATH, 'resources')
+if os.path.exists(_res):
+    _datas.append((_res, 'resources'))
 
 a = Analysis(
     [os.path.join(SPECPATH, 'main.py')],
     pathex=[SPECPATH],
     binaries=[],
     datas=_datas,
-    hiddenimports=_hidden,
+    hiddenimports=[
+        'PyQt5.sip',
+        'PyQt5.QtPrintSupport',
+        'matplotlib.backends.backend_qt5agg',
+        'matplotlib.backends.backend_agg',
+        'numpy',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
