@@ -22,7 +22,7 @@ if errorlevel 1 (
 )
 
 echo [3/4] Building executable with PyInstaller...
-pyinstaller DCM_Tool.spec --clean --noconfirm
+pyinstaller DCM_Tool.spec --clean --noconfirm --paths=.
 if errorlevel 1 (
     echo ERROR: PyInstaller build failed.
     pause

@@ -3,24 +3,53 @@
 # Usage: pyinstaller DCM_Tool.spec
 
 import sys
+import os
 from pathlib import Path
 
 block_cipher = None
+
+# Explicitly list every submodule so PyInstaller bundles them all.
+# collect_submodules() is unreliable for local packages when the working
+# directory isn't on sys.path at analysis time.
+_hidden = [
+    # --- core package ---
+    'core',
+    'core.dcm_model',
+    'core.dcm_parser',
+    'core.dcm_writer',
+    'core.dcm_compare',
+    # --- gui package ---
+    'gui',
+    'gui.styles',
+    'gui.parameter_editor',
+    'gui.compare_view',
+    'gui.merge_dialog',
+    'gui.main_window',
+    # --- Qt / matplotlib / numpy ---
+    'PyQt5.sip',
+    'PyQt5.QtPrintSupport',
+    'PyQt5.QtCore',
+    'PyQt5.QtGui',
+    'PyQt5.QtWidgets',
+    'matplotlib',
+    'matplotlib.backends.backend_qt5agg',
+    'matplotlib.backends.backend_agg',
+    'matplotlib.figure',
+    'matplotlib.pyplot',
+    'numpy',
+]
+
+# Guard: only include resources dir if it exists
+_datas = []
+if Path('resources').exists():
+    _datas.append(('resources', 'resources'))
 
 a = Analysis(
     ['main.py'],
     pathex=[str(Path('.').resolve())],
     binaries=[],
-    datas=[
-        ('resources', 'resources'),
-    ],
-    hiddenimports=[
-        'PyQt5.sip',
-        'PyQt5.QtPrintSupport',
-        'matplotlib.backends.backend_qt5agg',
-        'matplotlib.backends.backend_agg',
-        'numpy',
-    ],
+    datas=_datas,
+    hiddenimports=_hidden,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

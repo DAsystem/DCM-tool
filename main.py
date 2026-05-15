@@ -5,6 +5,17 @@ DCM Calibration Data Management Tool - Entry Point
 import sys
 import os
 
+# When frozen by PyInstaller the executable's directory is not automatically
+# on sys.path, so 'gui' and 'core' packages cannot be found.  Add it here
+# before any local imports so the packaged build works identically to the
+# development run.
+if getattr(sys, 'frozen', False):
+    _base = os.path.dirname(sys.executable)
+else:
+    _base = os.path.dirname(os.path.abspath(__file__))
+if _base not in sys.path:
+    sys.path.insert(0, _base)
+
 # Ensure high-DPI scaling works well on Windows
 os.environ.setdefault("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
 
