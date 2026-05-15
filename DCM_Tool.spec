@@ -8,6 +8,10 @@ from pathlib import Path
 
 block_cipher = None
 
+# SPECPATH is set automatically by PyInstaller to the directory that contains
+# this .spec file, which is always the project root.
+_project_root = SPECPATH
+
 # Explicitly list every submodule so PyInstaller bundles them all.
 # collect_submodules() is unreliable for local packages when the working
 # directory isn't on sys.path at analysis time.
@@ -39,14 +43,15 @@ _hidden = [
     'numpy',
 ]
 
-# Guard: only include resources dir if it exists
+# Guard: locate resources relative to the spec file, not cwd
 _datas = []
-if Path('resources').exists():
-    _datas.append(('resources', 'resources'))
+_res_src = os.path.join(_project_root, 'resources')
+if os.path.exists(_res_src):
+    _datas.append((_res_src, 'resources'))
 
 a = Analysis(
-    ['main.py'],
-    pathex=[str(Path('.').resolve())],
+    [os.path.join(_project_root, 'main.py')],
+    pathex=[_project_root],
     binaries=[],
     datas=_datas,
     hiddenimports=_hidden,
